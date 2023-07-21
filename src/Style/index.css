@@ -1,0 +1,98 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+:root {
+
+    /* Fonts */
+    --primary-ff: 'Helvetica Neue', Arial, sans-serif;
+    --secondary-ff: 'Roboto', sans-serif;
+    --heading-ff: 'Montserrat', sans-serif;
+
+    /* Font size */
+    --fs-xs: 0.75rem; 
+    --fs-sm: 0.875rem;
+    --fs-md: 1rem;
+    --fs-lg: 1.125rem;
+    --fs-xl: 1.5rem;
+    --fs-heading-xl: 3rem;
+    --fs-heading-lg: 2.625rem;
+    --fs-heading-md: 2.25rem;
+    --fs-heading-sm: 1.875rem;
+
+    /* Font weight */
+    --fw-light: 300;
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-semi-bold: 600;
+    --fw-bold: 700;
+    --fw-ultra-bold: 800;
+
+    /* Font colors */
+    --clr-text-primary: #333333;
+    --clr-text-secondary: #666666;
+    --clr-text-accent: #ff0000;
+    --clr-text-link: #0000ff;
+  
+    
+    /* Semantic Colors */
+    --clr-danger: #c0392b;
+    --clr-info: hsl(62, 100%, 50%);
+    --clr-warning: #f39c12;
+    --clr-success: #27ae60;
+  
+    /* Background Colors */
+    --clr-bg-primary: #f2f2f2;
+    --clr-bg-header: #f9f9f9;
+    --clr-bg-body: #ffffff;
+    --clr-bg-footer: #eeeeee;
+  
+    /* Border Colors */
+    --clr-border: #dddddd;
+    --clr-border-btn: #999999;
+    --clr-border-input: #cccccc;
+
+    /* Border Radius */
+    --border-radius-xs: 2px;
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+
+    /* Spacing */
+    --spacing-xs: .25rem;
+    --spacing-sm: .5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+
+    /* Sizes */
+    --size-xxs: .125rem;
+    --size-xs: .25rem;
+    --size-sm: .5rem;
+    --size-md: 1rem;
+    --size-lg: 1.5rem;
+    --size-xl: 2rem;
+    --size-xxl: 3rem;
+
+      /* Breakpoints */
+    --breakpoint-xs: 320px;
+    --breakpoint-sm: 480px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+  
+    /* Overlay Color */
+    --overlay-color: rgba(0, 0, 0, 0.5);
+}
+
+svg, img, picture {
+    max-width: 100%;
+    display: block;
+}
