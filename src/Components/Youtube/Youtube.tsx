@@ -31,12 +31,16 @@ type DetailItem = {
 export const Youtube: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<VideoItem[]>([]);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filterOption, setFilterOption] = useState<string>("any");
   const [sortOption, setSortOption] = useState<string>("relevance");
   const [isVideoEmbedded, setIsVideoEmbedded] = useState<boolean>(false);
   const [selectedVideoId, setSelectedVideoId] = useState<string>(""); // Add the selectedVideoId state
 
+  
 
   const resultsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -85,20 +89,48 @@ export const Youtube: React.FC = () => {
                 });
     
                 setSearchResults(resultsWithDetails);
+                setIsFetching(false); // Set isFetching to false after successfully fetching data
+
               })
-              .catch((error) => console.log("Error fetching video details:", error));
+              .catch((error) => {
+                 console.log("Error fetching video details:", error);
+                 setIsFetching(false); // Set isFetching to false after error
+              });
           } else {
             setSearchResults([]); // No video IDs found, set empty array
+            setIsFetching(false); // Set isFetching to false as there are no results
           }
         })
         .catch((error) => console.log("Error fetching search results:", error));
       // ... (same implementation as before)
     }, [currentPage, filterOption, sortOption, searchQuery, getDateFilter]); // Include getDateFilter in the dependency array
   
-    useEffect(() => {
+
+    // Debounce the search query
+  useEffect(() => {
+    const delay = 3000; // 3 seconds delay
+
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, delay);
+
+    // Clear the previous timeout if the search query changes within the delay
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
+
+   // Fetch data from YouTube when debouncedSearchQuery changes
+  useEffect(() => {
+    if (debouncedSearchQuery) {
+      setIsFetching(true);
       fetchSearchResults();
-    }, [fetchSearchResults]); // Include fetchSearchResults in the dependency array
-  
+    }
+  }, [debouncedSearchQuery]);
+
+  const handleSearch = () => {
+    setDebouncedSearchQuery(searchQuery); // Start the debounce process
+    setCurrentPage(1);
+  };
 
 
   const formatDuration = (duration: string) => {
@@ -121,10 +153,7 @@ export const Youtube: React.FC = () => {
   };
 
 
-  const handleSearch = () => {
-    fetchSearchResults();
-    setCurrentPage(1);
-  };
+  
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -213,6 +242,8 @@ export const Youtube: React.FC = () => {
           </select>
         </label>
       </div>
+      {isFetching && <div className="loading">Loading...</div>}
+
       {!isVideoEmbedded && (
         <div ref={resultsContainerRef} id="resultsContainer">
           {searchResults.length > 0 ? (

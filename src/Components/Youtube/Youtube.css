@@ -68,6 +68,10 @@ a {
   height: 576px;
 }
 
+.loading {
+  font-weight: bold;
+}
+
 /* Responsive styles */
 @media screen and (max-width: 768px) {
   .result-item {
