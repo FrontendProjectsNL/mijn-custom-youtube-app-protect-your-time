@@ -145,9 +145,19 @@ a {
   font-weight: bold;
 }
 
+.wrapper-button {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
 .back-button {
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: -2rem;
+  /* margin-left: 0.5rem; */
+  background: white;
+  border-radius: 5px;
+  padding: 4px 10px;
+  z-index: 10000;
 }
 
 .back-button:hover {
@@ -159,6 +169,11 @@ a {
 }
 .channel-name {
   font-weight: bold;
+}
+.channel-name-user-videos {
+  font-weight: lighter;
+  font-style: italic;
+  font-size: small;
 }
 
 .uploader-button {
@@ -178,6 +193,25 @@ a {
   background: transparent;
   color: #333;
 
+}
+
+.wrapper-user-videos {
+  display: flex;
+  justify-content: center;
+}
+
+.user-videos-list {
+  margin-top: 1.5rem;
+  width: 80vw;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+
+}
+.user-video-item {
+  flex-basis: calc(25% - 20px);
+  cursor: pointer;
 }
 
 /* Responsive styles */
