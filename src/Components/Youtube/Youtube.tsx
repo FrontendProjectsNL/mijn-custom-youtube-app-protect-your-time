@@ -19,8 +19,10 @@ interface VideoItem {
         url: string;
       };
     };
+    channelId: string; // Add the 'channelId' property to the VideoItem interface
+    channelTitle: string;
   };
-  duration: string; // Add the 'duration' property to the VideoItem interface
+  duration: string;
 }
 
 type DetailItem = {
@@ -39,6 +41,13 @@ export const Youtube: React.FC = () => {
   const [sortOption, setSortOption] = useState<string>("relevance");
   const [isVideoEmbedded, setIsVideoEmbedded] = useState<boolean>(false);
   const [selectedVideoId, setSelectedVideoId] = useState<string>(""); // Add the selectedVideoId state
+
+  const [userVideos, setUserVideos] = useState<VideoItem[]>([]);
+  const [showUserVideos, setShowUserVideos] = useState<boolean>(false);
+  const [userVideoSortOption, setUserVideoSortOption] = useState<string>("newest");
+  const [selectedChannelId, setSelectedChannelId] = useState<string>("");
+
+  const [uploaderVideos, setUploaderVideos] = useState<VideoItem[]>([]);
 
   const delay = 3000; // 3 seconds delay
 
@@ -189,6 +198,75 @@ export const Youtube: React.FC = () => {
     setSelectedVideoId(videoId);
   };
 
+
+  const handleUserVideoClick = (channelId: string) => {
+    console.log("Channel ID before API call:", channelId);
+    setShowUserVideos(true);
+    setSelectedChannelId(channelId);
+    fetchUserVideos(channelId);
+  };
+  
+
+
+  
+  const fetchUserVideos = async (channelName: string) => {
+    try {
+      // Properly encode the channel name by replacing spaces with %20
+      const encodedChannelName = encodeURIComponent(channelName);
+      const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&channelType=any&channelId=${encodedChannelName}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}`;
+  
+      console.log("Request URL:", requestUrl);
+  
+      const response = await fetch(requestUrl);
+      if (!response.ok) {
+        throw new Error(`Network response was not ok (status ${response.status})`);
+      }
+  
+      const data = await response.json();
+      console.log("Response from YouTube API:", data); // Log the response from the API
+  
+      if (data.items) {
+        const videoIds: string[] = data.items.map((item: VideoItem) => item.id.videoId);
+  
+        if (videoIds.length > 0) {
+          const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds.join(",")}&key=${apiKey}`;
+  
+          const detailsResponse = await fetch(detailsUrl);
+          const detailsData = await detailsResponse.json();
+  
+          const resultsWithDetails = data.items.map((item: VideoItem) => {
+            const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
+            return {
+              id: item.id,
+              snippet: item.snippet,
+              duration: videoDetail?.contentDetails?.duration || "N/A",
+            };
+          });
+  
+          setUserVideos(resultsWithDetails);
+        } else {
+          setUserVideos([]);
+        }
+      } else {
+        setUserVideos([]);
+      }
+    } catch (error) {
+      console.log("Error fetching videos by uploader:", error);
+      setUserVideos([]);
+    }
+  };
+  
+  
+  
+
+
+  const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setUserVideoSortOption(event.target.value);
+    if (showUserVideos) {
+      fetchUserVideos(selectedChannelId);
+    }
+  };
+
   const handleBackButtonClick = () => {
     setIsVideoEmbedded(false);
     setSelectedVideoId("");
@@ -261,6 +339,15 @@ export const Youtube: React.FC = () => {
                 <div className="title">{item.snippet.title}</div>
                 <div className="upload-date">Uploaded: {formatDate(item.snippet.publishedAt)}</div>
                 <div className="duration">Duration: {formatDuration(item.duration)}</div>
+                <div className="channel-name">Uploader: 
+                <button
+            className="uploader-button"
+            onClick={() => handleUserVideoClick(item.snippet.channelTitle)}
+          >
+            {item.snippet.channelTitle}
+          </button>
+                
+                </div>
               </div>
             ))
           ) : debouncedSearchQuery.trim() !== "" ? (
@@ -269,6 +356,33 @@ export const Youtube: React.FC = () => {
           }
         </div>
       )}
+
+{/* {showUserVideos && userVideos.length > 0 && ( */}
+{showUserVideos && uploaderVideos.length > 0 && (
+        <div className="user-videos">
+          <div className="user-videos-header">
+            <h2>Videos from {searchResults[0]?.snippet.channelTitle}</h2>
+            <label>
+              Sort by:
+              <select value={userVideoSortOption} onChange={handleUserVideoSortOptionChange}>
+                <option value="newest">Newest</option>
+                <option value="popular">Popular</option>
+              </select>
+            </label>
+          </div>
+          <div className="user-videos-list">
+            {userVideos.map((item) => (
+              <div key={item.id.videoId} className="user-video-item">
+                <img src={item.snippet.thumbnails.medium.url} alt={item.snippet.title} />
+                <div className="user-video-title">{item.snippet.title}</div>
+                <div className="user-video-upload-date">Uploaded: {formatDate(item.snippet.publishedAt)}</div>
+                <div className="user-video-duration">Duration: {formatDuration(item.duration)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {isVideoEmbedded && (
         <div className="embed-container">
           <ReactPlayer
