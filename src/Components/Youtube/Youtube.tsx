@@ -42,7 +42,7 @@ export const Youtube: React.FC = () => {
   const [isVideoEmbedded, setIsVideoEmbedded] = useState<boolean>(false);
   const [selectedVideoId, setSelectedVideoId] = useState<string>(""); // Add the selectedVideoId state
 
-  const [userVideos, setUserVideos] = useState<VideoItem[]>([]);
+  // const [userVideos, setUserVideos] = useState<VideoItem[]>([]);
   const [showUserVideos, setShowUserVideos] = useState<boolean>(false);
   const [userVideoSortOption, setUserVideoSortOption] = useState<string>("newest");
   const [selectedChannelId, setSelectedChannelId] = useState<string>("");
@@ -133,7 +133,7 @@ export const Youtube: React.FC = () => {
       setIsFetching(true);
       fetchSearchResults();
     }
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, fetchSearchResults]);
 
   const handleSearch = () => {
     setDebouncedSearchQuery(searchQuery); // Start the debounce process
@@ -243,16 +243,16 @@ export const Youtube: React.FC = () => {
             };
           });
   
-          setUserVideos(resultsWithDetails);
+          setUploaderVideos(resultsWithDetails);
         } else {
-          setUserVideos([]);
+          setUploaderVideos([]);
         }
       } else {
-        setUserVideos([]);
+        setUploaderVideos([]);
       }
     } catch (error) {
       console.log("Error fetching videos by uploader:", error);
-      setUserVideos([]);
+      setUploaderVideos([]);
     }
   };
   
@@ -372,7 +372,7 @@ export const Youtube: React.FC = () => {
             </label>
           </div>
           <div className="user-videos-list">
-            {userVideos.map((item) => (
+            {uploaderVideos.map((item) => (
               <div key={item.id.videoId} className="user-video-item">
                 <img src={item.snippet.thumbnails.medium.url} alt={item.snippet.title} />
                 <div className="user-video-title">{item.snippet.title}</div>
