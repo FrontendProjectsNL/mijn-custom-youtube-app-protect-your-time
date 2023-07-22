@@ -283,6 +283,7 @@ export const Youtube: React.FC = () => {
   return (
     <div className="youtube-container">
       <div className="wrapper">
+        <h1>Dit is een test!</h1>
       <div className="filter-container">
         {/* Filter and sort options */}
         <label>
