@@ -1,26 +1,99 @@
 .youtube-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.search-input {
+  width: 70%;
+  height: 20px;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  outline: none;
+
+  min-width: 30vw;
+}
+
+.search-button {
+  height: 36px;
+  padding: 0 16px;
+  margin-left: 10px;
+  background-color: #f00; /* You can change this to the desired button color */
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-button:hover {
+  background-color: #c00; /* You can change this to the desired button color on hover */
+}
+
+/*----------*/
+
+/* .youtube-container {
     font-family: Arial, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+} */
+
+.wrapper {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
 }
-.search-container {
+
+.filter-container {
+  width: fit-content;
+  margin-top: 10px;
+  display: flex;
+  gap: 30px;
+}
+
+.filter-container label {
+  display: flex;
+  gap: 10px;
+}
+.filter-container select {
+  width: 10vw;
+  height: 21px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  outline: none;
+}
+
+/* .search-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
-}
+} */
 
-input[type="text"] {
-  flex: 1;
+/* input[type="text"] {
+  min-width: 30vw;
   padding: 8px;
-}
+} */
 
-button {
+/* button {
   padding: 8px 16px;
-}
+} */
 
 #resultsContainer {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
@@ -70,6 +143,15 @@ a {
 
 .loading {
   font-weight: bold;
+}
+
+.back-button {
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.back-button:hover {
+  font-weight: bolder;
 }
 
 /* Responsive styles */

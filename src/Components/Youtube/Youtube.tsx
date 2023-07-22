@@ -205,16 +205,7 @@ export const Youtube: React.FC = () => {
 
   return (
     <div className="youtube-container">
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Enter your search query"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={handleKeyPress}
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
+      <div className="wrapper">
       <div className="filter-container">
         {/* Filter and sort options */}
         <label>
@@ -241,6 +232,20 @@ export const Youtube: React.FC = () => {
             <option value="channelCount">Channel Count</option>
           </select>
         </label>
+      </div>
+      
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Enter your search query"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleKeyPress}
+          className="search-input" 
+        />
+        <button onClick={handleSearch} className="search-button">Search</button>
+      </div>
+      
       </div>
       {isFetching && <div className="loading">Loading...</div>}
 
@@ -275,7 +280,7 @@ export const Youtube: React.FC = () => {
             width="100%"
             height="100%"
           />
-          <button onClick={handleBackButtonClick}>Back</button>
+          <button onClick={handleBackButtonClick} className="back-button">Back</button>
         </div>
       )}
       {!isVideoEmbedded && (
