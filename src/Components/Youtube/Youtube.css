@@ -154,6 +154,10 @@ a {
   font-weight: bolder;
 }
 
+.no-results {
+  font-weight: bold;
+}
+
 /* Responsive styles */
 @media screen and (max-width: 768px) {
   .result-item {

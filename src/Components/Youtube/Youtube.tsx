@@ -40,7 +40,7 @@ export const Youtube: React.FC = () => {
   const [isVideoEmbedded, setIsVideoEmbedded] = useState<boolean>(false);
   const [selectedVideoId, setSelectedVideoId] = useState<string>(""); // Add the selectedVideoId state
 
-  
+  const delay = 3000; // 3 seconds delay
 
   const resultsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -108,7 +108,6 @@ export const Youtube: React.FC = () => {
 
     // Debounce the search query
   useEffect(() => {
-    const delay = 3000; // 3 seconds delay
 
     const timeoutId = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
@@ -264,9 +263,10 @@ export const Youtube: React.FC = () => {
                 <div className="duration">Duration: {formatDuration(item.duration)}</div>
               </div>
             ))
-          ) : (
+          ) : debouncedSearchQuery.trim() !== "" ? (
             <div className="no-results">No results found.</div>
-          )}
+          ) : null
+          }
         </div>
       )}
       {isVideoEmbedded && (
