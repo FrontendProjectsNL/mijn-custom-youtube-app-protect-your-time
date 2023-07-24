@@ -308,9 +308,9 @@ useEffect(() => {
     setSelectedVideoId(videoId);
   };
 
-  const handleUserVideoClick = useCallback(async (channelId: string, event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleUserVideoClick = useCallback(async (channelId: string, event: React.MouseEvent<HTMLButtonElement> | null) => {
     try {
-      event.stopPropagation();
+      event?.stopPropagation();
   
       const encodedChannelId = encodeURIComponent(channelId);
       const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&channelId=${encodedChannelId}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}`;
@@ -421,8 +421,8 @@ useEffect(() => {
   const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setUserVideoSortOption(event.target.value);
     if (showUserVideos) {
-      // fetchUserVideos(selectedChannelId);
-      handleUserVideoClick(selectedChannelId);
+      // Pass both arguments to handleUserVideoClick
+      handleUserVideoClick(selectedChannelId, null);
     }
   };
 
