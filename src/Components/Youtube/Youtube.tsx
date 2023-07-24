@@ -2,6 +2,11 @@ import React, { useState, useEffect, useCallback, useRef, KeyboardEvent } from "
 import ReactPlayer from "react-player";
 import "./Youtube.css";
 
+// ****************************************************************************
+// !!!!! Controleer of alle comments grammaticaal (engels) kloppen!!!!!
+// ****************************************************************************
+
+
 // const apiKey = "AIzaSyC4posUPygqWuA4DDmDYXg2mr34Othn0Zg";
 // const apiKey = "AIzaSyAC24p-7mdNUtORivgikdrVO0Q8KnmIBJ4";
 const apiKey = "AIzaSyAH79Uk0Sq41I3-GCVnYH2IYE3kfoPQFCU";
@@ -14,6 +19,8 @@ interface VideoItem {
     videoId: string;
   };
   snippet: {
+    channelId: string;
+    channelTitle: string;
     title: string;
     publishedAt: string;
     thumbnails: {
@@ -21,8 +28,6 @@ interface VideoItem {
         url: string;
       };
     };
-    channelId: string; // Add the 'channelId' property to the VideoItem interface
-    channelTitle: string;
   };
   duration: string;
   viewCount?: number;
@@ -36,7 +41,7 @@ type DetailItem = {
 export const Youtube: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<VideoItem[]>([]);
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
+  // const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -52,15 +57,11 @@ export const Youtube: React.FC = () => {
 
   const [uploaderVideos, setUploaderVideos] = useState<VideoItem[]>([]);
   
-  const [showSearchResults, setShowSearchResults] = useState<boolean>(true); // New state variable
 
-  // const [embeddedVideoId, setEmbeddedVideoId] = useState<string | null>(null);
-
+  const [searchButtonClicked, setSearchButtonClicked] = useState<boolean>(false);
 
 
-
-
-  const delay = 3000; // 3 seconds delay
+  // const delay = 3000; 
 
   const resultsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -82,57 +83,79 @@ export const Youtube: React.FC = () => {
     return currentDate.toISOString();
   }, [filterOption]);
 
-  // Wrap fetchSearchResults with useCallback to maintain the same reference
   // const fetchSearchResults = useCallback(() => {
-  //     const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${searchQuery}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}&publishedAfter=${getDateFilter()}`;
-    
-  //     fetch(requestUrl)
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         const items = data.items || [];
-  //         const videoIds: string[] = items.map((item: VideoItem) => item.id.videoId);
-    
-  //         if (videoIds.length > 0) {
-  //           // Fetch additional video details using the video IDs
-  //           const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds.join(",")}&key=${apiKey}`;
-    
-  //           fetch(detailsUrl)
-  //             .then((response) => response.json())
-  //             .then((detailsData) => {
-  //               const resultsWithDetails = items.map((item: VideoItem) => {
-  //                 const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
-  //                 return {
-  //                   id: item.id,
-  //                   snippet: item.snippet,
-  //                   duration: videoDetail?.contentDetails?.duration || "N/A", // Provide a default value if duration is not available
-  //                   viewCount: videoDetail?.statistics?.viewCount ? parseInt(videoDetail.statistics.viewCount) : 0,
-  //                 };
-  //               });
-    
-  //               setSearchResults(resultsWithDetails);
-  //               setIsFetching(false); // Set isFetching to false after successfully fetching data
-
-  //             })
-  //             .catch((error) => {
-  //                console.log("Error fetching video details:", error);
-  //                setIsFetching(false); // Set isFetching to false after error
+  //   const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${searchQuery}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}&publishedAfter=${getDateFilter()}`;
+  
+  //   fetch(requestUrl)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const items = data.items || [];
+  //       const videoIds: string[] = items.map((item: VideoItem) => item.id.videoId);
+  
+  //       if (videoIds.length > 0) {
+  //         // Fetch additional video details using the video IDs
+  //         const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoIds.join(",")}&key=${apiKey}`;
+  
+  //         fetch(detailsUrl)
+  //           .then((response) => response.json())
+  //           .then((detailsData) => {
+  //             const resultsWithDetails = items.map((item: VideoItem) => {
+  //               const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
+  //               return {
+  //                 id: item.id,
+  //                 snippet: item.snippet,
+  //                 duration: videoDetail?.contentDetails?.duration || "N/A",
+  //                 viewCount: videoDetail?.statistics?.viewCount ? parseInt(videoDetail.statistics.viewCount) : 0,
+  //               };
   //             });
-  //         } else {
-  //           setSearchResults([]); // No video IDs found, set empty array
-  //           setIsFetching(false); // Set isFetching to false as there are no results
-  //         }
-  //       })
-  //       .catch((error) => console.log("Error fetching search results:", error));
-  //     // ... (same implementation as before)
-  //   }, [currentPage, filterOption, sortOption, searchQuery, getDateFilter]); // Include getDateFilter in the dependency array
   
+  //             setSearchResults(resultsWithDetails);
+  //             setIsFetching(false); // Set isFetching to false after successfully fetching data
 
-  const fetchSearchResults = useCallback(() => {
-    const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${searchQuery}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}&publishedAfter=${getDateFilter()}`;
+  //             // Reset the state that tracks user videos to hide the list of user-videos
+  //           setShowUserVideos(false);
+  //           setUploaderVideos([]);
+  //           setSelectedChannelId("");
+
+  //           })
+  //           .catch((error) => {
+  //             console.log("Error fetching video details:", error);
+  //             setIsFetching(false); // Set isFetching to false after error
+  //           });
+  //       } else {
+  //         setSearchResults([]); // No video IDs found, set empty array
+  //         setIsFetching(false); // Set isFetching to false as there are no results
+
+  //         // Reset the state that tracks user videos to hide the list of user-videos
+  //       setShowUserVideos(false);
+  //       setUploaderVideos([]);
+  //       setSelectedChannelId("");
+        
+  //       }
+  //     })
+  //     .catch((error) => { 
+  //       console.log("Error fetching search results:", error);
+  //       setIsFetching(false);
+  //     });
+  // }, [currentPage, filterOption, sortOption, searchQuery, getDateFilter]);
   
+//to make my api key secure I changed my previous fetchSearchResults (see code above) to this:
+  const fetchSearchResults = useCallback(() => {
+   
+    const apiKeyParam = `key=${apiKey}`;
+  const searchQueryParam = `q=${encodeURIComponent(searchQuery)}`;
+  const maxResultsParam = `maxResults=${totalResults}`;
+  const orderParam = `order=${sortOption}`;
+  const publishedAfterParam = `publishedAfter=${getDateFilter()}`;
+
+  const baseRequestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video";
+  const requestUrl = `${baseRequestUrl}&${searchQueryParam}&${maxResultsParam}&${orderParam}&${publishedAfterParam}&${apiKeyParam}`;
+
+
     fetch(requestUrl)
       .then((response) => response.json())
       .then((data) => {
+        console.log("The response (data) is: ", data);
         const items = data.items || [];
         const videoIds: string[] = items.map((item: VideoItem) => item.id.videoId);
   
@@ -143,6 +166,7 @@ export const Youtube: React.FC = () => {
           fetch(detailsUrl)
             .then((response) => response.json())
             .then((detailsData) => {
+              console.log("De response is (detailsData): ", detailsData)
               const resultsWithDetails = items.map((item: VideoItem) => {
                 const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
                 return {
@@ -170,7 +194,7 @@ export const Youtube: React.FC = () => {
           setSearchResults([]); // No video IDs found, set empty array
           setIsFetching(false); // Set isFetching to false as there are no results
 
-          // Reset the state that tracks user videos to hide the list of user-videos
+          // Als laatst reset the state that tracks user videos to hide the list of user-videos
         setShowUserVideos(false);
         setUploaderVideos([]);
         setSelectedChannelId("");
@@ -181,51 +205,60 @@ export const Youtube: React.FC = () => {
         console.log("Error fetching search results:", error);
         setIsFetching(false);
       });
-  }, [currentPage, filterOption, sortOption, searchQuery, getDateFilter]);
-  
-
-
-  
+  }, [ sortOption, getDateFilter, searchQuery]);
 
  // Debounce the search query
- useEffect(() => {
-  const timeoutId = setTimeout(() => {
-    setDebouncedSearchQuery(searchQuery);
-  }, delay);
+//  useEffect(() => {
+//   const timeoutId = setTimeout(() => {
+//     setDebouncedSearchQuery(searchQuery);
+//   }, delay);
 
-  // Clear the previous timeout if the search query changes within the delay
-  return () => clearTimeout(timeoutId);
-}, [searchQuery]);
+//   // Clear the previous timeout if the search query changes within the delay
+//   return () => clearTimeout(timeoutId);
+// }, [searchQuery]);
 
 
-  // Fetch data from YouTube when debouncedSearchQuery changes
-  useEffect(() => {
-    if (debouncedSearchQuery) {
-      setIsFetching(true);
-      fetchSearchResults();
-    } else {
-      // If the debouncedSearchQuery becomes empty, reset the video embedded state and selected video id
-      setIsFetching(false);
-      setIsVideoEmbedded(false);
-      setSelectedVideoId("");
-    }
-  }, [debouncedSearchQuery, fetchSearchResults]);
 
-  // const handleSearch = () => {
-  //   setDebouncedSearchQuery(searchQuery); // Start the debounce process
-  //   setCurrentPage(1);
-  //   // setShowUserVideos(false); // Hide user videos when a new search is initiated
-  // };
-  
+// Fetch data from YouTube when debouncedSearchQuery or searchButtonClicked changes
+// useEffect(() => {
+//   if (debouncedSearchQuery && searchButtonClicked) {
+//     setIsFetching(true);
+//     fetchSearchResults();
+//     setSearchButtonClicked(false); // Reset the search button click state after triggering the search
+//   } else {
+//     // If the debouncedSearchQuery becomes empty or the search button is not clicked,
+//     // reset the video embedded state and selected video id
+//     setIsFetching(false);
+//     setIsVideoEmbedded(false);
+//     setSelectedVideoId("");
+//   }
+// }, [debouncedSearchQuery, fetchSearchResults, searchButtonClicked]);
+
+useEffect(() => {
+  if (searchButtonClicked) {
+    setIsFetching(true);
+    fetchSearchResults();
+    setSearchButtonClicked(false); // Reset the search button click state after triggering the search
+  } else {
+    // If the debouncedSearchQuery becomes empty or the search button is not clicked,
+    // reset the video embedded state and selected video id
+    setIsFetching(false);
+    setIsVideoEmbedded(false);
+    setSelectedVideoId("");
+  }
+}, [searchButtonClicked, fetchSearchResults]);
+
+
   const handleSearch = () => {
-    setDebouncedSearchQuery(searchQuery); // Start the debounce process
     setCurrentPage(1);
     setIsVideoEmbedded(false); // Reset video embedded state
     setSelectedVideoId(""); // Reset selected video id
     // setShowUserVideos(false); // Hide user videos when a new search is initiated
+
+    // Set the search button click state to true to trigger the search
+    setSearchButtonClicked(true);
   };
-
-
+  
   const formatDuration = (duration: string) => {
     const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
     if (!match) return ""; // Handle the case when match is null
@@ -244,9 +277,6 @@ export const Youtube: React.FC = () => {
     }
     return formattedDuration.join(" ");
   };
-
-
-  
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -283,71 +313,11 @@ export const Youtube: React.FC = () => {
     setSelectedVideoId(videoId);
   };
 
-
-  // const handleUserVideoClick = useCallback(async (channelId: string, event: React.MouseEvent<HTMLButtonElement>) => {
-  //   try {
-  //     event.stopPropagation();
-  
-  //     const encodedChannelId = encodeURIComponent(channelId);
-  //     const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&channelId=${encodedChannelId}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}`;
-  
-  //     const response = await fetch(requestUrl);
-  //     if (!response.ok) {
-  //       throw new Error(`Network response was not ok (status ${response.status})`);
-  //     }
-  
-  //     const data = await response.json();
-  //     console.log("Response from YouTube API:", data); // Log the response from the API
-  
-  //     if (data.items) {
-  //       const videoIds: string[] = data.items.map((item: VideoItem) => item.id.videoId);
-  
-  //       if (videoIds.length > 0) {
-  //         const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds.join(",")}&key=${apiKey}`;
-  
-  //         const detailsResponse = await fetch(detailsUrl);
-  //         const detailsData = await detailsResponse.json();
-  
-  //         const resultsWithDetails = data.items.map((item: VideoItem) => {
-  //           const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
-  //           return {
-  //             id: item.id,
-  //             snippet: item.snippet,
-  //             duration: videoDetail?.contentDetails?.duration || "N/A",
-  //             viewCount: videoDetail?.statistics?.viewCount ? parseInt(videoDetail.statistics.viewCount) : 0,
-  //           };
-  //         });
-  
-  //         // Update both showUserVideos and uploaderVideos states together
-  //         setShowUserVideos(true);
-  //         setUploaderVideos(resultsWithDetails);
-  //         setSelectedChannelId(channelId);
-  //         setShowSearchResults(false); // Hide the search results
-  //       } else {
-  //         // If there are no videos for the selected channel, reset the states
-  //         setShowUserVideos(false);
-  //         setUploaderVideos([]);
-  //         setSelectedChannelId("");
-  //       }
-  //     } else {
-  //       // If there are no videos for the selected channel, reset the states
-  //       setShowUserVideos(false);
-  //       setUploaderVideos([]);
-  //       setSelectedChannelId("");
-  //     }
-  //   } catch (error) {
-  //     console.log("Error fetching videos by uploader:", error);
-  //     setShowUserVideos(false);
-  //     setUploaderVideos([]);
-  //     setSelectedChannelId("");
-  //   }
-  // }, [sortOption]);
-  
-
   const handleUserVideoClick = useCallback(async (channelId: string, event: React.MouseEvent<HTMLButtonElement>) => {
     try {
       event.stopPropagation();
-  
+
+      //!!!!!!!!!!1 Niet vergeten volgende stuk aanpassen (dezelfde algorithme gebruiken als in fetResults) 
       const encodedChannelId = encodeURIComponent(channelId);
       const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&channelId=${encodedChannelId}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}`;
   
@@ -382,7 +352,6 @@ export const Youtube: React.FC = () => {
           setShowUserVideos(true);
           setUploaderVideos(resultsWithDetails);
           setSelectedChannelId(channelId);
-          setShowSearchResults(false); // Hide the search results
         } else {
           // If there are no videos for the selected channel, reset the states
           setShowUserVideos(false);
@@ -402,66 +371,60 @@ export const Youtube: React.FC = () => {
       setSelectedChannelId("");
     }
   }, [sortOption]);
-  
-  
-
 
   
-  const fetchUserVideos = async (channelName: string) => {
-    try {
-      // Properly encode the channel name by replacing spaces with %20
-      const encodedChannelName = encodeURIComponent(channelName);
-      const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&channelType=any&channelId=${encodedChannelName}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}`;
+  // const fetchUserVideos = async (channelName: string) => {
+  //   try {
+  //     // Properly encode the channel name by replacing spaces with %20
+  //     const encodedChannelName = encodeURIComponent(channelName);
+  //     const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&channelType=any&channelId=${encodedChannelName}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}`;
   
-      console.log("Request URL:", requestUrl);
+  //     console.log("Request URL:", requestUrl);
   
-      const response = await fetch(requestUrl);
-      if (!response.ok) {
-        throw new Error(`Network response was not ok (status ${response.status})`);
-      }
+  //     const response = await fetch(requestUrl);
+  //     if (!response.ok) {
+  //       throw new Error(`Network response was not ok (status ${response.status})`);
+  //     }
   
-      const data = await response.json();
-      console.log("Response from YouTube API:", data); // Log the response from the API
+  //     const data = await response.json();
+  //     console.log("Response from YouTube API:", data); // Log the response from the API
   
-      if (data.items) {
-        const videoIds: string[] = data.items.map((item: VideoItem) => item.id.videoId);
+  //     if (data.items) {
+  //       const videoIds: string[] = data.items.map((item: VideoItem) => item.id.videoId);
   
-        if (videoIds.length > 0) {
-          const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds.join(",")}&key=${apiKey}`;
+  //       if (videoIds.length > 0) {
+  //         const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds.join(",")}&key=${apiKey}`;
   
-          const detailsResponse = await fetch(detailsUrl);
-          const detailsData = await detailsResponse.json();
+  //         const detailsResponse = await fetch(detailsUrl);
+  //         const detailsData = await detailsResponse.json();
   
-          const resultsWithDetails = data.items.map((item: VideoItem) => {
-            const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
-            return {
-              id: item.id,
-              snippet: item.snippet,
-              duration: videoDetail?.contentDetails?.duration || "N/A",
-            };
-          });
+  //         const resultsWithDetails = data.items.map((item: VideoItem) => {
+  //           const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
+  //           return {
+  //             id: item.id,
+  //             snippet: item.snippet,
+  //             duration: videoDetail?.contentDetails?.duration || "N/A",
+  //           };
+  //         });
   
-          setUploaderVideos(resultsWithDetails);
-        } else {
-          setUploaderVideos([]);
-        }
-      } else {
-        setUploaderVideos([]);
-      }
-    } catch (error) {
-      console.log("Error fetching videos by uploader:", error);
-      setUploaderVideos([]);
-    }
-  };
-  
-  
-  
-
+  //         setUploaderVideos(resultsWithDetails);
+  //       } else {
+  //         setUploaderVideos([]);
+  //       }
+  //     } else {
+  //       setUploaderVideos([]);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error fetching videos by uploader:", error);
+  //     setUploaderVideos([]);
+  //   }
+  // };
 
   const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setUserVideoSortOption(event.target.value);
     if (showUserVideos) {
-      fetchUserVideos(selectedChannelId);
+      // fetchUserVideos(selectedChannelId);
+      handleUserVideoClick(selectedChannelId);
     }
   };
 
@@ -469,7 +432,6 @@ export const Youtube: React.FC = () => {
     setIsVideoEmbedded(false);
     setSelectedVideoId("");
     setShowUserVideos(false); // Hide user videos
-  setShowSearchResults(true); // Show search results
   };
 
   const handleBackUserVideos = () => {
@@ -558,7 +520,11 @@ export const Youtube: React.FC = () => {
                 </div>
               </div>
             ))
-          ) : debouncedSearchQuery.trim() !== "" ? (
+          // ) : debouncedSearchQuery.trim() !== "" ? (
+          //   <div className="no-results">No results found.</div>
+          // ) : null
+          // }
+          ) : searchQuery.trim() !== "" ? (
             <div className="no-results">No results found.</div>
           ) : null
           }
@@ -629,6 +595,5 @@ export const Youtube: React.FC = () => {
      
     </div>
   );
-  
   
 };
