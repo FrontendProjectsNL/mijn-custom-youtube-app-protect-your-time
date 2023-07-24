@@ -140,72 +140,67 @@ export const Youtube: React.FC = () => {
   // }, [currentPage, filterOption, sortOption, searchQuery, getDateFilter]);
   
 //to make my api key secure I changed my previous fetchSearchResults (see code above) to this:
-  const fetchSearchResults = useCallback(() => {
-   
+ 
+const fetchSearchResults = useCallback(async () => {
+  try {
     const apiKeyParam = `key=${apiKey}`;
-  const searchQueryParam = `q=${encodeURIComponent(searchQuery)}`;
-  const maxResultsParam = `maxResults=${totalResults}`;
-  const orderParam = `order=${sortOption}`;
-  const publishedAfterParam = `publishedAfter=${getDateFilter()}`;
+    const searchQueryParam = `q=${encodeURIComponent(searchQuery)}`;
+    const maxResultsParam = `maxResults=${totalResults}`;
+    const orderParam = `order=${sortOption}`;
+    const publishedAfterParam = `publishedAfter=${getDateFilter()}`;
 
-  const baseRequestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video";
-  const requestUrl = `${baseRequestUrl}&${searchQueryParam}&${maxResultsParam}&${orderParam}&${publishedAfterParam}&${apiKeyParam}`;
+    const baseRequestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video";
+    const requestUrl = `${baseRequestUrl}&${searchQueryParam}&${maxResultsParam}&${orderParam}&${publishedAfterParam}&${apiKeyParam}`;
 
+    const response = await fetch(requestUrl);
+    if (!response.ok) {
+      throw new Error(`Network response was not ok (status ${response.status})`);
+    }
 
-    fetch(requestUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("The response (data) is: ", data);
-        const items = data.items || [];
-        const videoIds: string[] = items.map((item: VideoItem) => item.id.videoId);
-  
-        if (videoIds.length > 0) {
-          // Fetch additional video details using the video IDs
-          const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoIds.join(",")}&key=${apiKey}`;
-  
-          fetch(detailsUrl)
-            .then((response) => response.json())
-            .then((detailsData) => {
-              console.log("De response is (detailsData): ", detailsData)
-              const resultsWithDetails = items.map((item: VideoItem) => {
-                const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
-                return {
-                  id: item.id,
-                  snippet: item.snippet,
-                  duration: videoDetail?.contentDetails?.duration || "N/A",
-                  viewCount: videoDetail?.statistics?.viewCount ? parseInt(videoDetail.statistics.viewCount) : 0,
-                };
-              });
-  
-              setSearchResults(resultsWithDetails);
-              setIsFetching(false); // Set isFetching to false after successfully fetching data
+    const data = await response.json();
+    const items = data.items || [];
+    const videoIds: string[] = items.map((item: VideoItem) => item.id.videoId);
 
-              // Reset the state that tracks user videos to hide the list of user-videos
-            setShowUserVideos(false);
-            setUploaderVideos([]);
-            setSelectedChannelId("");
+    if (videoIds.length > 0) {
+      const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoIds.join(",")}&key=${apiKey}`;
+      const detailsResponse = await fetch(detailsUrl);
+      if (!detailsResponse.ok) {
+        throw new Error(`Network response for video details was not ok (status ${detailsResponse.status})`);
+      }
 
-            })
-            .catch((error) => {
-              console.log("Error fetching video details:", error);
-              setIsFetching(false); // Set isFetching to false after error
-            });
-        } else {
-          setSearchResults([]); // No video IDs found, set empty array
-          setIsFetching(false); // Set isFetching to false as there are no results
-
-          // Als laatst reset the state that tracks user videos to hide the list of user-videos
-        setShowUserVideos(false);
-        setUploaderVideos([]);
-        setSelectedChannelId("");
-        
-        }
-      })
-      .catch((error) => { 
-        console.log("Error fetching search results:", error);
-        setIsFetching(false);
+      const detailsData = await detailsResponse.json();
+      const resultsWithDetails = items.map((item: VideoItem) => {
+        const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
+        return {
+          id: item.id,
+          snippet: item.snippet,
+          duration: videoDetail?.contentDetails?.duration || "N/A",
+          viewCount: videoDetail?.statistics?.viewCount ? parseInt(videoDetail.statistics.viewCount) : 0,
+        };
       });
-  }, [ sortOption, getDateFilter, searchQuery]);
+
+      setSearchResults(resultsWithDetails);
+      setIsFetching(false); // Set isFetching to false after successfully fetching data
+
+      // Reset the state that tracks user videos to hide the list of user-videos
+      setShowUserVideos(false);
+      setUploaderVideos([]);
+      setSelectedChannelId("");
+    } else {
+      setSearchResults([]); // No video IDs found, set empty array
+      setIsFetching(false); // Set isFetching to false as there are no results
+
+      // Reset the state that tracks user videos to hide the list of user-videos
+      setShowUserVideos(false);
+      setUploaderVideos([]);
+      setSelectedChannelId("");
+    }
+  } catch (error) {
+    console.log("Error fetching search results:", error);
+    setIsFetching(false);
+  }
+}, [sortOption, getDateFilter, searchQuery]);
+
 
  // Debounce the search query
 //  useEffect(() => {
@@ -316,8 +311,7 @@ useEffect(() => {
   const handleUserVideoClick = useCallback(async (channelId: string, event: React.MouseEvent<HTMLButtonElement>) => {
     try {
       event.stopPropagation();
-
-      //!!!!!!!!!!1 Niet vergeten volgende stuk aanpassen (dezelfde algorithme gebruiken als in fetResults) 
+  
       const encodedChannelId = encodeURIComponent(channelId);
       const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&channelId=${encodedChannelId}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}`;
   
@@ -336,6 +330,10 @@ useEffect(() => {
           const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoIds.join(",")}&key=${apiKey}`;
   
           const detailsResponse = await fetch(detailsUrl);
+          if (!detailsResponse.ok) {
+            throw new Error(`Network response for video details was not ok (status ${detailsResponse.status})`);
+          }
+  
           const detailsData = await detailsResponse.json();
   
           const resultsWithDetails = data.items.map((item: VideoItem) => {
@@ -371,7 +369,7 @@ useEffect(() => {
       setSelectedChannelId("");
     }
   }, [sortOption]);
-
+  
   
   // const fetchUserVideos = async (channelName: string) => {
   //   try {
