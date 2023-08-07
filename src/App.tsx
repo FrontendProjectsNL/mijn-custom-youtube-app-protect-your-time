@@ -1,8 +1,7 @@
 // import './App.css'
 // import { useState } from 'react';
 // import { Select as AccessibleCustomSelect } from './Components/AccessibleCustomSelect'
-import GridFlex from './Components/Grid-Flex-Oefenen/GridFlex';
-import WebScraper from './Components/WebScraper/WebScraper';
+
 import { Youtube } from './Components/Youtube/Youtube';
 
 
@@ -54,8 +53,7 @@ function App() {
    label="Pick your favourite Ninjago character: "
    /> */}
    <Youtube />
-   {/* <GridFlex /> */}
-   {/* <WebScraper /> */}
+
     </>
   )
 }
