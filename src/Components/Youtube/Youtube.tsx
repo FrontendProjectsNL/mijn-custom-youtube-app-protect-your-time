@@ -60,7 +60,7 @@ export const Youtube: React.FC = () => {
 
   const [searchButtonClicked, setSearchButtonClicked] = useState<boolean>(false);
 
-  const [wordsArray, setWordsArray] = useState([]);
+  const [wordsArray, setWordsArray] = useState<string[]>([]);
 
 
 
@@ -86,7 +86,7 @@ export const Youtube: React.FC = () => {
 
         // Clean up the words (remove punctuation and special characters if needed)
         const cleanedWords = wordsArray.map((word) =>
-          word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+          word.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').toLowerCase()
         );
 
         setWordsArray(cleanedWords);
@@ -500,8 +500,8 @@ useEffect(() => {
       <div className="wrapper">
       <div className="filter-container">
         {/* Filter and sort options */}
-        {console.log(wordsArray)}
-        {console.log("This is just to test whther netlify is updating changes from my github or not")}
+        {/* {console.log(wordsArray)}
+        {console.log("This is just to test whther netlify is updating changes from my github or not")} */}
         <label>
           Filter by:
           <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
