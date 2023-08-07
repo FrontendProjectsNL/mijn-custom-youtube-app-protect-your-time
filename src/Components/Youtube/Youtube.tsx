@@ -501,6 +501,7 @@ useEffect(() => {
       <div className="filter-container">
         {/* Filter and sort options */}
         {console.log(wordsArray)}
+        {console.log("This is just to test whther netlify is updating changes from my github or not")}
         <label>
           Filter by:
           <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
