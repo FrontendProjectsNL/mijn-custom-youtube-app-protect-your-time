@@ -7,11 +7,11 @@ import "./Youtube.css";
 // ****************************************************************************
 
 
-// const apiKey = "AIzaSyC4posUPygqWuA4DDmDYXg2mr34Othn0Zg";
+const apiKey = "AIzaSyC4posUPygqWuA4DDmDYXg2mr34Othn0Zg";
 // const apiKey = "AIzaSyAC24p-7mdNUtORivgikdrVO0Q8KnmIBJ4";
-const apiKey = "AIzaSyAH79Uk0Sq41I3-GCVnYH2IYE3kfoPQFCU";
+// const apiKey = "AIzaSyAH79Uk0Sq41I3-GCVnYH2IYE3kfoPQFCU";
 const totalResults = 80; // Set the total number of results
-const resultsPerPage = 40; // Set 40 results per page
+const resultsPerPage = 10; // Set 40 results per page
 
 // Interface for YouTube video item
 interface VideoItem {
@@ -60,10 +60,46 @@ export const Youtube: React.FC = () => {
 
   const [searchButtonClicked, setSearchButtonClicked] = useState<boolean>(false);
 
+  const [wordsArray, setWordsArray] = useState([]);
+
+
 
   // const delay = 3000; 
 
   const resultsContainerRef = useRef<HTMLDivElement>(null);
+
+  let blockedKeywords = ["ufc", "mma", "common man show", "common man", "common show", "tribal people", "reactistan" ,"novice squad", "telegraaf", "ad", "nos", "pow", "nieuws", "news", "Iran international", "CNN", "FOX", "FoxNews", "ParsTV", "Pars TV", "Iran", "Shahram Homayoun", "Channel One", "ChannelOne"];
+
+  // create array from porn keywords:
+
+  useEffect(() => {
+    async function fetchTextFile() {
+      try {
+        const response = await fetch('AllPornKeywords.txt');
+        if (!response.ok) {
+          throw new Error('Failed to fetch the file');
+        }
+        const fileContent = await response.text();
+
+        // Split the content into an array of words
+        const wordsArray = fileContent.split(/\s+/);
+
+        // Clean up the words (remove punctuation and special characters if needed)
+        const cleanedWords = wordsArray.map((word) =>
+          word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+        );
+
+        setWordsArray(cleanedWords);
+      } catch (error) {
+        console.error('Error reading the file:', error);
+        setWordsArray([]);
+      }
+    }
+
+    fetchTextFile();
+  }, []);
+
+
 
   const getDateFilter = useCallback(() => {
     const currentDate = new Date();
@@ -275,6 +311,19 @@ useEffect(() => {
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      // Check if the search query contains blocked keywords
+      const lowerCasedQuery = searchQuery.toLowerCase().trim();
+      blockedKeywords = [...blockedKeywords, ...wordsArray];
+      const containsBlockedKeyword = blockedKeywords.some(keyword =>
+        lowerCasedQuery === keyword.toLowerCase()
+      );
+
+      if (containsBlockedKeyword) {
+        // Display an alert if blocked keyword is found
+        alert("The keyword You want to search is blacklisted. Please enter a different search query.");
+        return;
+      }
+
       handleSearch();
     }
   };
@@ -449,7 +498,6 @@ useEffect(() => {
   return (
     <div className="youtube-container">
       <div className="wrapper">
-        <h1>Dit is een test!</h1>
       <div className="filter-container">
         {/* Filter and sort options */}
         <label>
