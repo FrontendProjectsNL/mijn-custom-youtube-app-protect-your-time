@@ -500,6 +500,7 @@ useEffect(() => {
       <div className="wrapper">
       <div className="filter-container">
         {/* Filter and sort options */}
+        {console.log(wordsArray)}
         <label>
           Filter by:
           <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
