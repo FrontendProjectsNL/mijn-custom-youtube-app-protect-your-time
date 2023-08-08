@@ -394,40 +394,7 @@ const formatDuration = (duration: string | undefined) => {
   
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      const lowerCasedQuery = searchQuery.replace(/\s+/g, ' ').toLowerCase().trim();
-      const loserCasedQueryArray = lowerCasedQuery.split(' ');
-  
-      blockedKeywords = [...blockedKeywords, ...wordsArray];
-      let blackListedKeyword = '';
-      let containsBlockedKeyword = false; // Initialize containsBlockedKeyword to false
-  
-      blockedKeywords.some(keyword => {
-        const pattern = new RegExp(`^${keyword}$`, 'i');
-        for (let i = 0; i < loserCasedQueryArray.length; i++) {
-          if (pattern.test(loserCasedQueryArray[i])) {
-            containsBlockedKeyword = true;
-            blackListedKeyword = loserCasedQueryArray[i];
-            break;
-          }
-        }
-      });
-  
-      if (containsBlockedKeyword) {
-        // Display an alert if a blocked keyword is found
-        alert(`The keyword ${blackListedKeyword} You want to search is blacklisted. Please enter a different search query.`);
-        return;
-      }
-  
-  
-      // handleSearch();
-
-      setCurrentPage(1);
-    setIsVideoEmbedded(false); // Reset video embedded state
-    setSelectedVideoId(""); // Reset selected video id
-    // setShowUserVideos(false); // Hide user videos when a new search is initiated
-
-    // Set the search button click state to true to trigger the search
-    setSearchButtonClicked(true);
+      handleSearch();
     }
   };
   
