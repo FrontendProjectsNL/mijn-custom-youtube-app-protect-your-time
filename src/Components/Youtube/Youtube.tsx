@@ -68,8 +68,7 @@ export const Youtube: React.FC = () => {
 
   const resultsContainerRef = useRef<HTMLDivElement>(null);
   
-  let blockedKeywords = ['fasdflasjflajfaljfslkjflksfs'];
-  //let blockedKeywords = ["ufc", "mma", "common man show", "kalame tv", "kalameh tv", "radio mani", "common man", "common show", "tribal people", "tribal try", "reactistan" ,"novice squad", "telegraaf", "ad", "nos", "pow", "nieuws", "news", "Iran international", "CNN", "FOX", "FoxNews", "ParsTV", "Pars TV", "Iran", "Shahram Homayoun", "Channel One", "ChannelOne"];
+  let blockedKeywords = ["ufc", "mma", "common man show", "kalame tv", "kalameh tv", "radio mani", "common man", "common show", "tribal people", "tribal try", "reactistan" ,"novice squad", "telegraaf", "ad", "nos", "pow", "nieuws", "news", "Iran international", "CNN", "FOX", "FoxNews", "ParsTV", "Pars TV", "Iran", "Shahram Homayoun", "Channel One", "ChannelOne"];
 
   // create array from porn keywords:
 
