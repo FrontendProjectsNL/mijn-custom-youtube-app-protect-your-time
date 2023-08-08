@@ -7,10 +7,10 @@ import "./Youtube.css";
 // ****************************************************************************
 
 
-const apiKey = "AIzaSyC4posUPygqWuA4DDmDYXg2mr34Othn0Zg";
+// const apiKey = "AIzaSyC4posUPygqWuA4DDmDYXg2mr34Othn0Zg";
 // const apiKey = "AIzaSyAC24p-7mdNUtORivgikdrVO0Q8KnmIBJ4";
-// const apiKey = "AIzaSyAH79Uk0Sq41I3-GCVnYH2IYE3kfoPQFCU";
-const totalResults = 80; // Set the total number of results
+const apiKey = "AIzaSyAH79Uk0Sq41I3-GCVnYH2IYE3kfoPQFCU";
+const totalResults = 380; // Set the total number of results
 const resultsPerPage = 10; // Set 40 results per page
 
 // Interface for YouTube video item
@@ -67,8 +67,9 @@ export const Youtube: React.FC = () => {
   // const delay = 3000; 
 
   const resultsContainerRef = useRef<HTMLDivElement>(null);
-
-  let blockedKeywords = ["ufc", "mma", "common man show", "common man", "common show", "tribal people", "reactistan" ,"novice squad", "telegraaf", "ad", "nos", "pow", "nieuws", "news", "Iran international", "CNN", "FOX", "FoxNews", "ParsTV", "Pars TV", "Iran", "Shahram Homayoun", "Channel One", "ChannelOne"];
+  
+  let blockedKeywords = ['fasdflasjflajfaljfslkjflksfs'];
+  //let blockedKeywords = ["ufc", "mma", "common man show", "kalame tv", "kalameh tv", "radio mani", "common man", "common show", "tribal people", "tribal try", "reactistan" ,"novice squad", "telegraaf", "ad", "nos", "pow", "nieuws", "news", "Iran international", "CNN", "FOX", "FoxNews", "ParsTV", "Pars TV", "Iran", "Shahram Homayoun", "Channel One", "ChannelOne"];
 
   // create array from porn keywords:
 
@@ -177,65 +178,66 @@ export const Youtube: React.FC = () => {
   
 //to make my api key secure I changed my previous fetchSearchResults (see code above) to this:
  
-const fetchSearchResults = useCallback(async () => {
-  try {
-    const apiKeyParam = `key=${apiKey}`;
-    const searchQueryParam = `q=${encodeURIComponent(searchQuery)}`;
-    const maxResultsParam = `maxResults=${totalResults}`;
-    const orderParam = `order=${sortOption}`;
-    const publishedAfterParam = `publishedAfter=${getDateFilter()}`;
+// const fetchSearchResults = useCallback(async () => {
+//   console.log("Ik ben nu in fetchSearchResults!!!!")
+//   try {
+//     const apiKeyParam = `key=${apiKey}`;
+//     const searchQueryParam = `q=${encodeURIComponent(searchQuery)}`;
+//     const maxResultsParam = `maxResults=${totalResults}`;
+//     const orderParam = `order=${sortOption}`;
+//     const publishedAfterParam = `publishedAfter=${getDateFilter()}`;
 
-    const baseRequestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video";
-    const requestUrl = `${baseRequestUrl}&${searchQueryParam}&${maxResultsParam}&${orderParam}&${publishedAfterParam}&${apiKeyParam}`;
+//     const baseRequestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video";
+//     const requestUrl = `${baseRequestUrl}&${searchQueryParam}&${maxResultsParam}&${orderParam}&${publishedAfterParam}&${apiKeyParam}`;
 
-    const response = await fetch(requestUrl);
-    if (!response.ok) {
-      throw new Error(`Network response was not ok (status ${response.status})`);
-    }
+//     const response = await fetch(requestUrl);
+//     if (!response.ok) {
+//       throw new Error(`Network response was not ok (status ${response.status})`);
+//     }
 
-    const data = await response.json();
-    const items = data.items || [];
-    const videoIds: string[] = items.map((item: VideoItem) => item.id.videoId);
+//     const data = await response.json();
+//     const items = data.items || [];
+//     const videoIds: string[] = items.map((item: VideoItem) => item.id.videoId);
 
-    if (videoIds.length > 0) {
-      const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoIds.join(",")}&key=${apiKey}`;
-      const detailsResponse = await fetch(detailsUrl);
-      if (!detailsResponse.ok) {
-        throw new Error(`Network response for video details was not ok (status ${detailsResponse.status})`);
-      }
+//     if (videoIds.length > 0) {
+//       const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoIds.join(",")}&key=${apiKey}`;
+//       const detailsResponse = await fetch(detailsUrl);
+//       if (!detailsResponse.ok) {
+//         throw new Error(`Network response for video details was not ok (status ${detailsResponse.status})`);
+//       }
 
-      const detailsData = await detailsResponse.json();
-      const resultsWithDetails = items.map((item: VideoItem) => {
-        const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
-        return {
-          id: item.id,
-          snippet: item.snippet,
-          duration: videoDetail?.contentDetails?.duration || "N/A",
-          viewCount: videoDetail?.statistics?.viewCount ? parseInt(videoDetail.statistics.viewCount) : 0,
-        };
-      });
+//       const detailsData = await detailsResponse.json();
+//       const resultsWithDetails = items.map((item: VideoItem) => {
+//         const videoDetail = detailsData.items.find((detail: DetailItem) => detail.id === item.id.videoId);
+//         return {
+//           id: item.id,
+//           snippet: item.snippet,
+//           duration: videoDetail?.contentDetails?.duration || "N/A",
+//           viewCount: videoDetail?.statistics?.viewCount ? parseInt(videoDetail.statistics.viewCount) : 0,
+//         };
+//       });
 
-      setSearchResults(resultsWithDetails);
-      setIsFetching(false); // Set isFetching to false after successfully fetching data
+//       setSearchResults(resultsWithDetails);
+//       setIsFetching(false); // Set isFetching to false after successfully fetching data
 
-      // Reset the state that tracks user videos to hide the list of user-videos
-      setShowUserVideos(false);
-      setUploaderVideos([]);
-      setSelectedChannelId("");
-    } else {
-      setSearchResults([]); // No video IDs found, set empty array
-      setIsFetching(false); // Set isFetching to false as there are no results
+//       // Reset the state that tracks user videos to hide the list of user-videos
+//       setShowUserVideos(false);
+//       setUploaderVideos([]);
+//       setSelectedChannelId("");
+//     } else {
+//       setSearchResults([]); // No video IDs found, set empty array
+//       setIsFetching(false); // Set isFetching to false as there are no results
 
-      // Reset the state that tracks user videos to hide the list of user-videos
-      setShowUserVideos(false);
-      setUploaderVideos([]);
-      setSelectedChannelId("");
-    }
-  } catch (error) {
-    console.log("Error fetching search results:", error);
-    setIsFetching(false);
-  }
-}, [sortOption, getDateFilter, searchQuery]);
+//       // Reset the state that tracks user videos to hide the list of user-videos
+//       setShowUserVideos(false);
+//       setUploaderVideos([]);
+//       setSelectedChannelId("");
+//     }
+//   } catch (error) {
+//     console.log("Error fetching search results:", error);
+//     setIsFetching(false);
+//   }
+// }, [sortOption, getDateFilter, searchQuery]);
 
 
  // Debounce the search query
@@ -265,6 +267,34 @@ const fetchSearchResults = useCallback(async () => {
 //   }
 // }, [debouncedSearchQuery, fetchSearchResults, searchButtonClicked]);
 
+const fetchSearchResults = useCallback(async () => {
+  setIsFetching(true);
+  try {
+    const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${searchQuery}&maxResults=${totalResults}&key=${apiKey}`;
+
+    const response = await fetch(requestUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch search results (status ${response.status})`);
+    }
+
+    const data = await response.json();
+    const items: VideoItem[] = data.items || [];
+    setSearchResults(items);
+    setIsFetching(false);
+  } catch (error) {
+    console.error("Error fetching search results:", error);
+    setIsFetching(false);
+  }
+}, [searchButtonClicked]);
+
+// useEffect(() => {
+//   if (searchButtonClicked) {
+//     fetchSearchResults();
+//   } else {
+//     setSearchResults([]);
+//   }
+// }, [searchButtonClicked, fetchSearchResults]);
+
 useEffect(() => {
   if (searchButtonClicked) {
     setIsFetching(true);
@@ -280,54 +310,130 @@ useEffect(() => {
 }, [searchButtonClicked, fetchSearchResults]);
 
 
+// const formatDuration = (duration: string) => {
+//   const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+//   if (!match) return ""; // Handle the case when match is null
+//   const hours = parseInt(match[1]?.replace("H", "")) || 0;
+//   const minutes = parseInt(match[2]?.replace("M", "")) || 0;
+//   const seconds = parseInt(match[3]?.replace("S", "")) || 0;
+//   const formattedDuration = [];
+//   if (hours > 0) {
+//     formattedDuration.push(`${hours}h`);
+//   }
+//   if (minutes > 0) {
+//     formattedDuration.push(`${minutes}m`);
+//   }
+//   if (seconds > 0) {
+//     formattedDuration.push(`${seconds}s`);
+//   }
+//   return formattedDuration.join(" ");
+// };
+
+// Helper function to format video duration
+const formatDuration = (duration: string | undefined) => {
+  if (!duration) {
+    return "Unknown";
+  }
+
+  // Regular expression to match ISO 8601 duration format
+  const durationRegex = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+  const match = duration.match(durationRegex);
+
+  if (!match) {
+    return "Unknown";
+  }
+
+  const hours = match[1] ? parseInt(match[1]) : 0;
+  const minutes = match[2] ? parseInt(match[2]) : 0;
+  const seconds = match[3] ? parseInt(match[3]) : 0;
+
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+};
+
+
   const handleSearch = () => {
-    setCurrentPage(1);
+
+    const lowerCasedQuery = searchQuery.replace(/\s+/g, ' ').toLowerCase().trim();
+      const loserCasedQueryArray = lowerCasedQuery.split(' ');
+  
+      blockedKeywords = [...blockedKeywords, ...wordsArray];
+      let blackListedKeyword = '';
+      let containsBlockedKeyword = false; // Initialize containsBlockedKeyword to false
+  
+      blockedKeywords.some(keyword => {
+        const pattern = new RegExp(`^${keyword}$`, 'i');
+        for (let i = 0; i < loserCasedQueryArray.length; i++) {
+          if (pattern.test(loserCasedQueryArray[i])) {
+            containsBlockedKeyword = true;
+            blackListedKeyword = loserCasedQueryArray[i];
+            break;
+          }
+        }
+      });
+  
+      if (containsBlockedKeyword) {
+        // Display an alert if a blocked keyword is found
+        alert(`The keyword ${blackListedKeyword} You want to search is blacklisted. Please enter a different search query.`);
+        return;
+      }
+
+    else {
+      console.log("==================>>>>>>>>>>>>>>> ELSE <<<<<<<<<<<<<<<=============");
+      setCurrentPage(1);
     setIsVideoEmbedded(false); // Reset video embedded state
     setSelectedVideoId(""); // Reset selected video id
     // setShowUserVideos(false); // Hide user videos when a new search is initiated
 
     // Set the search button click state to true to trigger the search
     setSearchButtonClicked(true);
+    }
+
+    
   };
   
-  const formatDuration = (duration: string) => {
-    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-    if (!match) return ""; // Handle the case when match is null
-    const hours = parseInt(match[1]?.replace("H", "")) || 0;
-    const minutes = parseInt(match[2]?.replace("M", "")) || 0;
-    const seconds = parseInt(match[3]?.replace("S", "")) || 0;
-    const formattedDuration = [];
-    if (hours > 0) {
-      formattedDuration.push(`${hours}h`);
-    }
-    if (minutes > 0) {
-      formattedDuration.push(`${minutes}m`);
-    }
-    if (seconds > 0) {
-      formattedDuration.push(`${seconds}s`);
-    }
-    return formattedDuration.join(" ");
-  };
-
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      // Check if the search query contains blocked keywords
-      const lowerCasedQuery = searchQuery.toLowerCase().trim();
+      const lowerCasedQuery = searchQuery.replace(/\s+/g, ' ').toLowerCase().trim();
+      const loserCasedQueryArray = lowerCasedQuery.split(' ');
+  
       blockedKeywords = [...blockedKeywords, ...wordsArray];
-      const containsBlockedKeyword = blockedKeywords.some(keyword =>
-        lowerCasedQuery === keyword.toLowerCase()
-      );
-
+      let blackListedKeyword = '';
+      let containsBlockedKeyword = false; // Initialize containsBlockedKeyword to false
+  
+      blockedKeywords.some(keyword => {
+        const pattern = new RegExp(`^${keyword}$`, 'i');
+        for (let i = 0; i < loserCasedQueryArray.length; i++) {
+          if (pattern.test(loserCasedQueryArray[i])) {
+            containsBlockedKeyword = true;
+            blackListedKeyword = loserCasedQueryArray[i];
+            break;
+          }
+        }
+      });
+  
       if (containsBlockedKeyword) {
-        // Display an alert if blocked keyword is found
-        alert("The keyword You want to search is blacklisted. Please enter a different search query.");
+        // Display an alert if a blocked keyword is found
+        alert(`The keyword ${blackListedKeyword} You want to search is blacklisted. Please enter a different search query.`);
         return;
       }
+  
+  
+      // handleSearch();
 
-      handleSearch();
+      setCurrentPage(1);
+    setIsVideoEmbedded(false); // Reset video embedded state
+    setSelectedVideoId(""); // Reset selected video id
+    // setShowUserVideos(false); // Hide user videos when a new search is initiated
+
+    // Set the search button click state to true to trigger the search
+    setSearchButtonClicked(true);
     }
   };
-
+  
+  
+  
   const handlePagination = (page: number) => {
     setCurrentPage(page);
   };
