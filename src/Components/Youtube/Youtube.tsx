@@ -102,23 +102,23 @@ export const Youtube: React.FC = () => {
 
 
 
-  const getDateFilter = useCallback(() => {
-    const currentDate = new Date();
-    switch (filterOption) {
-      case "lastWeek":
-        currentDate.setDate(currentDate.getDate() - 7);
-        break;
-      case "lastMonth":
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        break;
-      case "lastYear":
-        currentDate.setFullYear(currentDate.getFullYear() - 1);
-        break;
-      default:
-        break;
-    }
-    return currentDate.toISOString();
-  }, [filterOption]);
+  // const getDateFilter = useCallback(() => {
+  //   const currentDate = new Date();
+  //   switch (filterOption) {
+  //     case "lastWeek":
+  //       currentDate.setDate(currentDate.getDate() - 7);
+  //       break;
+  //     case "lastMonth":
+  //       currentDate.setMonth(currentDate.getMonth() - 1);
+  //       break;
+  //     case "lastYear":
+  //       currentDate.setFullYear(currentDate.getFullYear() - 1);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   return currentDate.toISOString();
+  // }, [filterOption]);
 
   // const fetchSearchResults = useCallback(() => {
   //   const requestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${searchQuery}&maxResults=${totalResults}&key=${apiKey}&order=${sortOption}&publishedAfter=${getDateFilter()}`;
@@ -285,7 +285,7 @@ const fetchSearchResults = useCallback(async () => {
     console.error("Error fetching search results:", error);
     setIsFetching(false);
   }
-}, [searchButtonClicked]);
+}, [searchQuery]);
 
 // useEffect(() => {
 //   if (searchButtonClicked) {
