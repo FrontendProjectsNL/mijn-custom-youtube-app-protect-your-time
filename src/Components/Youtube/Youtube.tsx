@@ -3,13 +3,7 @@ import ReactPlayer from "react-player";
 import "./Youtube.css";
 import { blockedKeywords } from "./blockedwords";
 
-// ****************************************************************************
-// !!!!! Controleer of alle comments grammaticaal (engels) kloppen!!!!!
-// ****************************************************************************
 
-
-// const apiKey = "AIzaSyC4posUPygqWuA4DDmDYXg2mr34Othn0Zg";
-// const apiKey = "AIzaSyAC24p-7mdNUtORivgikdrVO0Q8KnmIBJ4";
 const apiKey = "AIzaSyAH79Uk0Sq41I3-GCVnYH2IYE3kfoPQFCU";
 const totalResults = 380; // Set the total number of results
 const resultsPerPage = 10; // Set 40 results per page
@@ -52,7 +46,7 @@ export const Youtube: React.FC = () => {
 
   // const [userVideos, setUserVideos] = useState<VideoItem[]>([]);
   const [showUserVideos, setShowUserVideos] = useState<boolean>(false);
-  const [userVideoSortOption, setUserVideoSortOption] = useState<string>("newest");
+  // const [userVideoSortOption, setUserVideoSortOption] = useState<string>("newest");
   
 
   const [uploaderVideos, setUploaderVideos] = useState<VideoItem[]>([]);
@@ -294,22 +288,22 @@ const formatDuration = (duration: string | undefined) => {
 
 // Inside your component function
 
-const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  const newSortOption = event.target.value;
-  setUserVideoSortOption(newSortOption);
+// const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+//   const newSortOption = event.target.value;
+//   setUserVideoSortOption(newSortOption);
 
-  if (showUserVideos) {
-    if (newSortOption === 'newest') {
-      const sortedVideos = [...uploaderVideos].sort((a, b) => {
-        return new Date(b.snippet.publishedAt).getTime() - new Date(a.snippet.publishedAt).getTime();
-      });
-      setUploaderVideos(sortedVideos);
-    } else if (newSortOption === 'popular') {
-      const sortedVideos = [...uploaderVideos].sort((a, b) => b?.viewCount - a?.viewCount);
-      setUploaderVideos(sortedVideos);
-    }
-  }
-};
+//   if (showUserVideos) {
+//     if (newSortOption === 'newest') {
+//       const sortedVideos = [...uploaderVideos].sort((a, b) => {
+//         return new Date(b.snippet.publishedAt).getTime() - new Date(a.snippet.publishedAt).getTime();
+//       });
+//       setUploaderVideos(sortedVideos);
+//     } else if (newSortOption === 'popular') {
+//       const sortedVideos = [...uploaderVideos].sort((a, b) => b?.viewCount  - a?.viewCount);
+//       setUploaderVideos(sortedVideos);
+//     }
+//   }
+// };
 
 
   const handleBackButtonClick = () => {
@@ -336,9 +330,7 @@ const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElem
     <div className="youtube-container">
       <div className="wrapper">
       <div className="filter-container">
-        {/* Filter and sort options */}
-        {/* {console.log(wordsArray)}
-        {console.log("This is just to test whther netlify is updating changes from my github or not")} */}
+
         <label>
           Filter by:
           <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
@@ -421,14 +413,14 @@ const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElem
         <div className="user-videos">
           <div className="user-videos-header">
             <h2>Videos from {searchResults[0]?.snippet.channelTitle}</h2>
-            <label>
+            {/* <label>
               Sort by:
               <select value={userVideoSortOption} onChange={handleUserVideoSortOptionChange}>
   <option value="newest">Newest</option>
   <option value="popular">Popular</option>
 </select>
 
-            </label>
+            </label> */}
           </div>
           <div className="wrapper-user-videos">
           <div className="user-videos-list">
