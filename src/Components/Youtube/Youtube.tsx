@@ -53,7 +53,7 @@ export const Youtube: React.FC = () => {
   // const [userVideos, setUserVideos] = useState<VideoItem[]>([]);
   const [showUserVideos, setShowUserVideos] = useState<boolean>(false);
   const [userVideoSortOption, setUserVideoSortOption] = useState<string>("newest");
-  const [selectedChannelId, setSelectedChannelId] = useState<string>("");
+  
 
   const [uploaderVideos, setUploaderVideos] = useState<VideoItem[]>([]);
   
@@ -270,24 +270,23 @@ const formatDuration = (duration: string | undefined) => {
           // Update both showUserVideos and uploaderVideos states together
           setShowUserVideos(true);
           setUploaderVideos(resultsWithDetails);
-          setSelectedChannelId(channelId);
+         
         } else {
           // If there are no videos for the selected channel, reset the states
           setShowUserVideos(false);
           setUploaderVideos([]);
-          setSelectedChannelId("");
         }
       } else {
         // If there are no videos for the selected channel, reset the states
         setShowUserVideos(false);
         setUploaderVideos([]);
-        setSelectedChannelId("");
+
       }
     } catch (error) {
       console.log("Error fetching videos by uploader:", error);
       setShowUserVideos(false);
       setUploaderVideos([]);
-      setSelectedChannelId("");
+
     }
   }, [sortOption]);
   
@@ -306,7 +305,7 @@ const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElem
       });
       setUploaderVideos(sortedVideos);
     } else if (newSortOption === 'popular') {
-      const sortedVideos = [...uploaderVideos].sort((a, b) => b.viewCount - a.viewCount);
+      const sortedVideos = [...uploaderVideos].sort((a, b) => b?.viewCount - a?.viewCount);
       setUploaderVideos(sortedVideos);
     }
   }
