@@ -15,7 +15,7 @@ export const blockedKeywords: string[] = ['Squirting',
 'powned', 'nieuws', 'news', 'Iran international', 'cnn', 'fox', 'foxnews', 'ParsTV',
 'Pars tv', 'Iran', 'Shahram Homayoun', 'Channel One',  'ChannelOne', 'Whore',  'Pornstar',
 'Facesitting', 'Girls kissing', 'Cuckold', 'Fisting', 'LezDom', 'Asshole', 'Ebony', 'armpit',
-'trample', 'trampling', 'heels', 'boots', 'doormat', 'ejaculation', 'bondage', 'sex toys'
+'trample', 'trampling', 'heels', 'boots', 'doormat', 'ejaculation', 'bondage', 'sex toys', 'nikshah'
 
 ]
 

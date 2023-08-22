@@ -293,13 +293,25 @@ const formatDuration = (duration: string | undefined) => {
   
 
 
-  const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setUserVideoSortOption(event.target.value);
-    if (showUserVideos) {
-      // Pass both arguments to handleUserVideoClick
-      handleUserVideoClick(selectedChannelId, null);
+// Inside your component function
+
+const handleUserVideoSortOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const newSortOption = event.target.value;
+  setUserVideoSortOption(newSortOption);
+
+  if (showUserVideos) {
+    if (newSortOption === 'newest') {
+      const sortedVideos = [...uploaderVideos].sort((a, b) => {
+        return new Date(b.snippet.publishedAt).getTime() - new Date(a.snippet.publishedAt).getTime();
+      });
+      setUploaderVideos(sortedVideos);
+    } else if (newSortOption === 'popular') {
+      const sortedVideos = [...uploaderVideos].sort((a, b) => b.viewCount - a.viewCount);
+      setUploaderVideos(sortedVideos);
     }
-  };
+  }
+};
+
 
   const handleBackButtonClick = () => {
     setIsVideoEmbedded(false);
@@ -413,9 +425,10 @@ const formatDuration = (duration: string | undefined) => {
             <label>
               Sort by:
               <select value={userVideoSortOption} onChange={handleUserVideoSortOptionChange}>
-                <option value="newest">Newest</option>
-                <option value="popular">Popular</option>
-              </select>
+  <option value="newest">Newest</option>
+  <option value="popular">Popular</option>
+</select>
+
             </label>
           </div>
           <div className="wrapper-user-videos">
