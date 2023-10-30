@@ -10,12 +10,15 @@ export const blockedKeywords: string[] = ['Squirting',
 'Fisting', 'Milf', 'Interracial', 'Assplay', 'Caning', 'Submissive', 'Brunette', 
 'Blonde', 'Topless', 'Foreplay', 'Sex', 'teasing', 'countdown', 'footjob', 'footfetish',
 'fetish', 'Spitting', 'Barefoot', 'Gay', 'Princess', 'Goddess', 'Sloppy', 'Gangbang', 
-'ufc', 'mma', 'common man show', 'kalame tv', 'kalameh tv', 'radio mani', 'common man', 
+'ufc', 'mma', 'common man show', 'kalame tv', 'kalameh tv', 'kalametv', 'radio mani', 'common man', 
 'common show', 'tribal people', 'tribal try', 'reactistan', 'novice squad', 'telegraaf', 
 'powned', 'nieuws', 'news', 'Iran international', 'cnn', 'fox', 'foxnews', 'ParsTV',
-'Pars tv', 'Iran', 'Shahram Homayoun', 'Channel One',  'ChannelOne', 'Whore',  'Pornstar',
+'Pars tv', 'Iran', 'Shahram Homayoun', 'Channel One', 'ShahramHomayoun', 'channelonetv', 'ChannelOne', 'Whore',  'Pornstar',
 'Facesitting', 'Girls kissing', 'Cuckold', 'Fisting', 'LezDom', 'Asshole', 'Ebony', 'armpit',
-'trample', 'trampling', 'heels', 'boots', 'doormat', 'ejaculation', 'bondage', 'sex toys'
-
+'trample', 'trampling', 'heels', 'boots', 'doormat', 'ejaculation', 'bondage', 'sex toys', 'mehra maleki', 'mehramaleki', 'iranaryaeetv'
 ]
+
+// export const blockedKeywords: string[] = ['Squirting',
+// 'Torture', 'Fingering'
+// ]
 
